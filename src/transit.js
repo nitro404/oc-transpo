@@ -1,3 +1,4 @@
+var changeCase = require("change-case");
 var utilities = require("extra-utilities");
 var envelope = require("node-envelope");
 
@@ -360,7 +361,7 @@ transit.getStopSummary = function(stop, options, callback) {
 
 			var formattedData = {
 				stop: utilities.parseInteger(data.StopNo),
-				description: utilities.toTitleCase(data.StopDescription)
+				description: changeCase.title(data.StopDescription)
 			};
 
 			var value = null;
@@ -498,11 +499,11 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 			};
 
 			if(utilities.isValid(data.StopDescription)) {
-				formattedData.description = utilities.toTitleCase(data.StopDescription);
+				formattedData.description = changeCase.title(data.StopDescription);
 			}
 
 			if(utilities.isValid(data.StopLabel)) {
-				formattedData.description = utilities.toTitleCase(data.StopLabel);
+				formattedData.description = changeCase.title(data.StopLabel);
 			}
 
 			var routes = null;
@@ -711,11 +712,11 @@ transit.getStopInformation = function(stop, options, callback) {
 			};
 
 			if(utilities.isValid(data.StopDescription)) {
-				formattedData.description = utilities.toTitleCase(data.StopDescription);
+				formattedData.description = changeCase.title(data.StopDescription);
 			}
 
 			if(utilities.isValid(data.StopLabel)) {
-				formattedData.description = utilities.toTitleCase(data.StopLabel);
+				formattedData.description = changeCase.title(data.StopLabel);
 			}
 
 			var value = null;

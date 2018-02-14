@@ -31,7 +31,8 @@
   },
   "homepage": "https://github.com/nitro404/oc-transpo#readme",
   "dependencies": {
-    "extra-utilities": "^1.1.0",
+    "change-case": "^3.0.1",
+    "extra-utilities": "^1.1.1",
     "node-envelope": "^1.0.0"
   }
 }
