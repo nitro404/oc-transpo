@@ -14,7 +14,7 @@ var errorCodes = {
 	12: "Stop does not service route"
 };
 
-function formatError function(error) {
+function formatError(error) {
 	var formattedError = { };
 
 	var errorCode = utilities.parseInteger(error);
