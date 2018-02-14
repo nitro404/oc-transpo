@@ -4,9 +4,9 @@ var envelope = require("node-envelope");
 
 var transit = { };
 
-transit.apiAddress = "http://api.octranspo1.com/v1.2";
+var apiAddress = "http://api.octranspo1.com/v1.2";
 
-transit.errorCodes = {
+var errorCodes = {
 	1: "Invalid API key",
 	2: "Unable to query data source",
 	10: "Invalid stop number",
@@ -14,18 +14,7 @@ transit.errorCodes = {
 	12: "Stop does not service route"
 };
 
-transit.timeRegExpString = "([0-9]{1,2}):?([0-5][0-9])";
-transit.timeRegExp = new RegExp("^[ \t]*" + transit.timeRegExpString + "[ \t]*$");
-transit.bikeRackRegExp = /b/gi;
-transit.lengthRegExpString = "([46])0?";
-transit.lengthRegExp = new RegExp(transit.lengthRegExpString);
-transit.doubleDeckerRegExp = /d{2}/gi;
-transit.dieselElectricHybridRegExp = /deh/gi;
-transit.inviroRegExp = /in/gi;
-transit.orionRegExp = /on/gi;
-transit.lowFloorEasyAccessRegExp = /[^d][ela]{1,3}[^h]/gi;
-
-transit.formatError = function(error) {
+function formatError function(error) {
 	var formattedError = { };
 
 	var errorCode = utilities.parseInteger(error);
@@ -34,7 +23,7 @@ transit.formatError = function(error) {
 		formattedError.code = errorCode;
 	}
 
-	var message = transit.errorCodes[errorCode];
+	var message = errorCodes[errorCode];
 
 	if(utilities.isValid(message)) {
 		formattedError.message = message;
@@ -44,12 +33,12 @@ transit.formatError = function(error) {
 	}
 
 	return formattedError;
-};
+}
 
-transit.parseTime = function(time) {
+function parseTime(time) {
 	if(utilities.isEmptyString(time)) { return null; }
 
-	var timeData = time.match(transit.timeRegExp);
+	var timeData = time.match(/^[ \t]*([0-9]{1,2}):?([0-5][0-9])[ \t]*$/);
 
 	if(!timeData || timeData.length !== 3) { return null; }
 
@@ -60,9 +49,9 @@ transit.parseTime = function(time) {
 	var fixedHour = hour % 24;
 
 	return utilities.parseTime((fixedHour < 10 ? "0" : "") + fixedHour + ":" + timeData[2]);
-};
+}
 
-transit.parseTimeElapsed = function(timeElapsed) {
+function parseTimeElapsed(timeElapsed) {
 	var formattedTimeElapsed = utilities.parseFloatingPointNumber(timeElapsed);
 
 	if(isNaN(formattedTimeElapsed)) { return NaN; }
@@ -70,23 +59,23 @@ transit.parseTimeElapsed = function(timeElapsed) {
 	if(formattedTimeElapsed < 0) { return -1; }
 
 	return Math.floor(formattedTimeElapsed * 60000);
-};
+}
 
-transit.parseBusType = function(type, includeRaw) {
+function parseBusType(type, includeRaw) {
 	if(utilities.isEmptyString(type)) {
 		return null;
 	}
 
 	var formattedData = {
-		bikeRack: !!type.match(transit.bikeRackRegExp),
-		lowFloorEasyAccess: !!type.match(transit.lowFloorEasyAccessRegExp),
-		doubleDecker: !!type.match(transit.doubleDeckerRegExp),
-		dieselElectricHybrid: !!type.match(transit.dieselElectricHybridRegExp),
-		inviro: !!type.match(transit.inviroRegExp),
-		orion: !!type.match(transit.orionRegExp)
+		bikeRack: !!type.match(/b/gi),
+		lowFloorEasyAccess: !!type.match(/[^d][ela]{1,3}[^h]/gi),
+		doubleDecker: !!type.match(/d{2}/gi),
+		dieselElectricHybrid: !!type.match(/deh/gi),
+		inviro: !!type.match(/in/gi),
+		orion: !!type.match(/on/gi)
 	};
 
-	var lengthData = type.match(transit.lengthRegExp);
+	var lengthData = type.match(/([46])0?/);
 
 	if(utilities.isNonEmptyArray(lengthData) && lengthData.length >= 2) {
 		var value = utilities.parseInteger(lengthData[1]);
@@ -126,7 +115,7 @@ transit.parseBusType = function(type, includeRaw) {
 	}
 
 	return formattedData;
-};
+}
 
 transit.setup = function(options) {
 	var formattedOptions = utilities.formatObject(
@@ -338,7 +327,7 @@ transit.getStopSummary = function(stop, options, callback) {
 			stopNo: stop
 		},
 		{
-			baseUrl: transit.apiAddress
+			baseUrl: apiAddress
 		},
 		function(error, result) {
 			if(error) {
@@ -352,7 +341,7 @@ transit.getStopSummary = function(stop, options, callback) {
 			var data = result.GetRouteSummaryForStopResult;
 
 			if(utilities.isNonEmptyString(data.Error)) {
-				var formattedError = transit.formatError(data.Error);
+				var formattedError = formatError(data.Error);
 				var error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
 				error.status = 400;
@@ -473,7 +462,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 			routeNo: route
 		},
 		{
-			baseUrl: transit.apiAddress
+			baseUrl: apiAddress
 		},
 		function(error, result) {
 			if(error) {
@@ -487,7 +476,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 			var data = result.GetNextTripsForStopResult;
 
 			if(utilities.isNonEmptyString(data.Error)) {
-				var formattedError = transit.formatError(data.Error);
+				var formattedError = formatError(data.Error);
 				var error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
 				error.status = 400;
@@ -591,18 +580,18 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 						formattedTrip = {
 							destination: trip.TripDestination,
 							arrivalTime: utilities.parseInteger(trip.AdjustedScheduleTime),
-							lastUpdated: transit.parseTimeElapsed(trip.AdjustmentAge),
+							lastUpdated: parseTimeElapsed(trip.AdjustmentAge),
 							lastTrip: utilities.parseBoolean(trip.LastTripOfSchedule)
 						};
 
 						try {
-							formattedTrip.startTime = transit.parseTime(trip.TripStartTime);
+							formattedTrip.startTime = parseTime(trip.TripStartTime);
 						}
 						catch(error) {
 							console.error(error);
 						}
 
-						bus = transit.parseBusType(trip.BusType, formattedOptions.includeRaw);
+						bus = parseBusType(trip.BusType, formattedOptions.includeRaw);
 
 						if(utilities.isValid(bus)) {
 							formattedTrip.bus = bus;
@@ -686,7 +675,7 @@ transit.getStopInformation = function(stop, options, callback) {
 			stopNo: stop
 		},
 		{
-			baseUrl: transit.apiAddress
+			baseUrl: apiAddress
 		},
 		function(error, result) {
 			if(error) {
@@ -700,7 +689,7 @@ transit.getStopInformation = function(stop, options, callback) {
 			var data = result.GetRouteSummaryForStopResult;
 
 			if(utilities.isNonEmptyString(data.Error)) {
-				var formattedError = transit.formatError(data.Error);
+				var formattedError = formatError(data.Error);
 				var error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
 				error.status = 400;
@@ -804,18 +793,18 @@ transit.getStopInformation = function(stop, options, callback) {
 							formattedTrip = {
 								destination: trip.TripDestination,
 								arrivalTime: utilities.parseInteger(trip.AdjustedScheduleTime),
-								lastUpdated: transit.parseTimeElapsed(trip.AdjustmentAge),
+								lastUpdated: parseTimeElapsed(trip.AdjustmentAge),
 								lastTrip: utilities.parseBoolean(trip.LastTripOfSchedule)
 							};
 
 							try {
-								formattedTrip.startTime = transit.parseTime(trip.TripStartTime);
+								formattedTrip.startTime = parseTime(trip.TripStartTime);
 							}
 							catch(error) {
 								console.error(error);
 							}
 
-							bus = transit.parseBusType(trip.BusType, formattedOptions.includeRaw);
+							bus = parseBusType(trip.BusType, formattedOptions.includeRaw);
 
 							if(utilities.isValid(bus)) {
 								formattedTrip.bus = bus;
