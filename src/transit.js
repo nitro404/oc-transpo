@@ -35,10 +35,10 @@ function formatError function(error) {
 	return formattedError;
 }
 
-function parseTime(time) {
-	if(utilities.isEmptyString(time)) { return null; }
+function parseTime(value) {
+	if(utilities.isEmptyString(value)) { return null; }
 
-	var timeData = time.match(/^[ \t]*([0-9]{1,2}):?([0-5][0-9])[ \t]*$/);
+	var timeData = value.match(/^[ \t]*([0-9]{1,2}):?([0-5][0-9])[ \t]*$/);
 
 	if(!timeData || timeData.length !== 3) { return null; }
 
