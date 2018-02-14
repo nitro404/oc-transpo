@@ -1,6 +1,6 @@
 {
   "name": "oc-transpo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A wrapper for the OC Transpo API.",
   "main": "src/transit.js",
   "scripts": {
