@@ -6,6 +6,9 @@ var transit = { };
 
 var apiAddress = "http://api.octranspo1.com/v1.2";
 
+var apiKey = null;
+var appID = null;
+
 var errorCodes = {
 	1: "Invalid API key",
 	2: "Unable to query data source",
@@ -142,8 +145,8 @@ transit.setup = function(options) {
 		}
 	);
 
-	transit.key = formattedOptions.key;
-	transit.appID = formattedOptions.appID;
+	apiKey = formattedOptions.key;
+	appID = formattedOptions.appID;
 };
 
 transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback) {
@@ -293,11 +296,11 @@ transit.getStopSummary = function(stop, options, callback) {
 		throw new Error("Missing or invalid callback function.");
 	}
 
-	if(utilities.isEmptyString(transit.key)) {
+	if(utilities.isEmptyString(apiKey)) {
 		return callback(new Error("Missing OC Transpo API key."));
 	}
 
-	if(utilities.isEmptyString(transit.appID)) {
+	if(utilities.isEmptyString(appID)) {
 		return callback(new Error("Missing OC Transpo application identifier."));
 	}
 
@@ -321,8 +324,8 @@ transit.getStopSummary = function(stop, options, callback) {
 	return envelope.get(
 		"GetRouteSummaryForStop",
 		{
-			apiKey: transit.key,
-			appID: transit.appID,
+			apiKey: apiKey,
+			appID: appID,
 			format: "json",
 			stopNo: stop
 		},
@@ -421,11 +424,11 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 		throw new Error("Missing or invalid callback function.");
 	}
 
-	if(utilities.isEmptyString(transit.key)) {
+	if(utilities.isEmptyString(apiKey)) {
 		return callback(new Error("Missing OC Transpo API key."));
 	}
 
-	if(utilities.isEmptyString(transit.appID)) {
+	if(utilities.isEmptyString(appID)) {
 		return callback(new Error("Missing OC Transpo application identifier."));
 	}
 
@@ -455,8 +458,8 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 	return envelope.get(
 		"GetNextTripsForStop",
 		{
-			apiKey: transit.key,
-			appID: transit.appID,
+			apiKey: apiKey,
+			appID: appID,
 			format: "json",
 			stopNo: stop,
 			routeNo: route
@@ -669,8 +672,8 @@ transit.getStopInformation = function(stop, options, callback) {
 	return envelope.get(
 		"GetNextTripsForStopAllRoutes",
 		{
-			apiKey: transit.key,
-			appID: transit.appID,
+			apiKey: apiKey,
+			appID: appID,
 			format: "json",
 			stopNo: stop
 		},
