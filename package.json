@@ -2,9 +2,14 @@
   "name": "oc-transpo",
   "version": "1.0.4",
   "description": "A wrapper for the OC Transpo API.",
-  "main": "src/transit.js",
+  "main": "dist/oc-transpo.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp build",
+    "lint": "gulp lint",
+    "test": "mocha",
+    "coverage": "gulp coverage",
+    "coveralls": "npm run coverage -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
+    "security": "gulp security"
   },
   "repository": {
     "type": "git",
@@ -34,5 +39,9 @@
     "change-case": "^3.0.1",
     "extra-utilities": "^1.1.2",
     "node-envelope": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "gulp-fabricator": "^1.0.1"
   }
 }
