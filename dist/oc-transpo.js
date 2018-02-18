@@ -160,9 +160,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 	}
 
 	if(routes === null || typeof routes !== "object") {
-		var error = new Error("Invalid routes parameter type - expected object or array.");
-		error.status = 400;
-		return callback(error);
+		return callback(new Error("Invalid routes parameter type - expected object or array."));
 	}
 
 	var formattedOptions = utilities.formatObject(
@@ -188,9 +186,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 			}
 
 			if(utilities.isEmptyArray(stopSummary.routes)) {
-				var error = new Error("Stop number " + stop + " has no routes.");
-				error.status = 400;
-				return callback(error);
+				return callback(new Error("Stop number " + stop + " has no routes."));
 			}
 
 			var routeList = null;
@@ -219,23 +215,17 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 				hasRouteWithDirection = false;
 
 				if(route.direction === null || typeof route.direction !== "object") {
-					var error = new Error("Route has missing or invalid direction attribute - expected object.");
-					error.status = 400;
-					return callback(null, error);
+					return callback(new Error("Route has missing or invalid direction attribute - expected object."));
 				}
 
 				if(typeof route.direction.name !== "string") {
-					var error = new Error("Invalid direction name type: " + (typeof directionName) + " - expected string!");
-					error.status = 400;
-					return callback(null, error);
+					return callback(new Error("Invalid direction name type: " + (typeof directionName) + " - expected string!"));
 				}
 
 				formattedDirectionName = route.direction.name.toLowerCase().trim();
 
 				if(utilities.isEmptyString(formattedDirectionName)) {
-					var error = new Error("Direction name cannot be empty!");
-					error.status = 400;
-					return callback(null, error);
+					return callback(new Error("Direction name cannot be empty!"));
 				}
 
 				for(var j=0;j<stopSummary.routes.length;j++) {
@@ -270,9 +260,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 						message = "Stop number " + stop + " has route with number " + route + ", but not direction " + route.direction.name + ".";
 					}
 
-					var error = new Error(message);
-					error.status = 400;
-					return callback(error);
+					return callback(new Error(message));
 				}
 			}
 
@@ -305,9 +293,7 @@ transit.getStopSummary = function(stop, options, callback) {
 	}
 
 	if(!Number.isInteger(stop)) {
-		var error = new Error("Missing or invalid stop number: " + stop + " - expected integer.");
-		error.status = 400;
-		return callback(error);
+		return callback(new Error("Missing or invalid stop number: " + stop + " - expected integer."));
 	}
 
 	var formattedOptions = utilities.formatObject(
@@ -347,7 +333,6 @@ transit.getStopSummary = function(stop, options, callback) {
 				var formattedError = formatError(data.Error);
 				var error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
-				error.status = 400;
 				return callback(error);
 			}
 
@@ -433,15 +418,11 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 	}
 
 	if(!Number.isInteger(stop)) {
-		var error = new Error("Missing or invalid stop number: " + stop + " - expected integer.");
-		error.status = 400;
-		return callback(error);
+		return callback(new Error("Missing or invalid stop number: " + stop + " - expected integer."));
 	}
 
 	if(!Number.isInteger(route)) {
-		var error = new Error("Missing or invalid route number: " + route + " - expected integer.");
-		error.status = 400;
-		return callback(error);
+		return callback(new Error("Missing or invalid route number: " + route + " - expected integer."));
 	}
 
 	var formattedOptions = utilities.formatObject(
@@ -482,7 +463,6 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 				var formattedError = formatError(data.Error);
 				var error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
-				error.status = 400;
 				return callback(error);
 			}
 
@@ -653,9 +633,7 @@ transit.getStopInformation = function(stop, options, callback) {
 	}
 
 	if(!Number.isInteger(stop)) {
-		var error = new Error("Missing or invalid stop number: " + stop + " - expected integer.");
-		error.status = 400;
-		return callback(error);
+		return callback(new Error("Missing or invalid stop number: " + stop + " - expected integer."));
 	}
 
 	var formattedOptions = utilities.formatObject(
@@ -695,7 +673,6 @@ transit.getStopInformation = function(stop, options, callback) {
 				var formattedError = formatError(data.Error);
 				var error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
-				error.status = 400;
 				return callback(error);
 			}
 
