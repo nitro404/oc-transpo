@@ -159,7 +159,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 		throw new Error("Missing or invalid callback function!");
 	}
 
-	if(routes === null || typeof routes !== "object") {
+	if(!utilities.isObject(routes)) {
 		return callback(new Error("Invalid routes parameter type - expected object or array."));
 	}
 
@@ -214,7 +214,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 				hasRoute = false;
 				hasRouteWithDirection = false;
 
-				if(route.direction === null || typeof route.direction !== "object") {
+				if(!utilities.isObject(route.direction)) {
 					return callback(new Error("Route has missing or invalid direction attribute - expected object."));
 				}
 
