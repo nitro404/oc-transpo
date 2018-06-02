@@ -1,3 +1,5 @@
+"use strict";
+
 global.utilities = undefined;
 
 var ocTranspo = require("../dist/oc-transpo.js");
