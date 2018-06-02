@@ -36,12 +36,12 @@
   },
   "homepage": "https://github.com/nitro404/oc-transpo#readme",
   "dependencies": {
-    "change-case": "^3.0.1",
-    "extra-utilities": "^1.1.2",
-    "node-envelope": "^1.0.0"
+    "change-case": "^3.0.2",
+    "extra-utilities": "^1.2.14",
+    "node-envelope": "^1.0.7"
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "gulp-fabricator": "^1.0.1"
+    "gulp-fabricator": "^1.0.4"
   }
 }
