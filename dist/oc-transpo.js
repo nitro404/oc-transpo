@@ -624,11 +624,11 @@ transit.getStopInformation = function(stop, options, callback) {
 		throw new Error("Missing or invalid callback function!");
 	}
 
-	if(utilities.isEmptyString(transit.key)) {
+	if(utilities.isEmptyString(apiKey)) {
 		return callback(new Error("Missing OC Transpo API key."));
 	}
 
-	if(utilities.isEmptyString(transit.appID)) {
+	if(utilities.isEmptyString(appID)) {
 		return callback(new Error("Missing OC Transpo application identifier."));
 	}
 
