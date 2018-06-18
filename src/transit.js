@@ -1,3 +1,5 @@
+"use strict";
+
 var changeCase = require("change-case");
 var utilities = require("extra-utilities");
 var envelope = require("node-envelope");
@@ -10,11 +12,11 @@ var apiKey = null;
 var appID = null;
 
 var errorCodes = {
-	1: "Invalid API key",
-	2: "Unable to query data source",
-	10: "Invalid stop number",
-	11: "Invalid route number",
-	12: "Stop does not service route"
+	"1": "Invalid API key",
+	"2": "Unable to query data source",
+	"10": "Invalid stop number",
+	"11": "Invalid route number",
+	"12": "Stop does not service route"
 };
 
 function formatError(error) {
@@ -173,7 +175,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 			overwrite: {
 				type: "boolean",
 				default: true
-			},
+			}
 		},
 		true
 	);
@@ -204,7 +206,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 				routeList = [routes];
 			}
 
-			for(var i=0;i<routeList.length;i++) {
+			for(var i = 0; i < routeList.length; i++) {
 				route = routeList[i];
 
 				if(utilities.isEmptyObject(route)) {
@@ -228,7 +230,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 					return callback(new Error("Direction name cannot be empty!"));
 				}
 
-				for(var j=0;j<stopSummary.routes.length;j++) {
+				for(var j = 0; j < stopSummary.routes.length; j++) {
 					routeSummary = stopSummary.routes[j];
 
 					if(routeSummary.route === route.route) {
@@ -267,9 +269,8 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 			if(Array.isArray(routes)) {
 				return callback(null, results);
 			}
-			else {
-				return callback(null, results[0]);
-			}
+
+			return callback(null, results[0]);
 		}
 	);
 };
@@ -341,14 +342,9 @@ transit.getStopSummary = function(stop, options, callback) {
 				description: changeCase.title(data.StopDescription)
 			};
 
-			var value = null;
 			var routes = null;
 			var route = null;
-			var trips = null;
-			var trip = null;
-			var bus = null;
 			var formattedRoute = null;
-			var formattedTrip = null;
 
 			if(utilities.isValid(data.Routes)) {
 				formattedData.routes = [];
@@ -370,7 +366,7 @@ transit.getStopSummary = function(stop, options, callback) {
 					}
 				}
 
-				for(var i=0;i<routes.length;i++) {
+				for(var i = 0; i < routes.length; i++) {
 					route = routes[i];
 
 					if(utilities.isEmptyObject(route)) {
@@ -507,7 +503,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 				}
 			}
 
-			for(var i=0;i<routes.length;i++) {
+			for(var i = 0; i < routes.length; i++) {
 				route = routes[i];
 
 				if(utilities.isEmptyObject(route)) {
@@ -553,7 +549,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 						}
 					}
 
-					for(var j=0;j<trips.length;j++) {
+					for(var j = 0; j < trips.length; j++) {
 						trip = trips[j];
 
 						if(utilities.isEmptyObject(trip)) {
@@ -599,7 +595,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 				formattedData.raw = result;
 			}
 
-			transit.getRouteDirectionIdentifiers(
+			return transit.getRouteDirectionIdentifiers(
 				formattedData.stop,
 				formattedData.routes,
 				function(error, directionIdentifiers) {
@@ -688,7 +684,6 @@ transit.getStopInformation = function(stop, options, callback) {
 				formattedData.description = changeCase.title(data.StopLabel);
 			}
 
-			var value = null;
 			var routes = null;
 			var route = null;
 			var trips = null;
@@ -717,7 +712,7 @@ transit.getStopInformation = function(stop, options, callback) {
 					}
 				}
 
-				for(var i=0;i<routes.length;i++) {
+				for(var i = 0; i < routes.length; i++) {
 					route = routes[i];
 
 					if(utilities.isEmptyObject(route)) {
@@ -763,7 +758,7 @@ transit.getStopInformation = function(stop, options, callback) {
 							}
 						}
 
-						for(var j=0;j<trips.length;j++) {
+						for(var j = 0; j < trips.length; j++) {
 							trip = trips[j];
 
 							if(utilities.isEmptyObject(trip)) {
