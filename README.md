@@ -13,7 +13,7 @@ This module is unofficial and is in no way affiliated with OC Transpo.
 ## Server-Side Usage
 
 ```javascript
-var transit = require("oc-transpo");
+const transit = require("oc-transpo");
 
 transit.setup({
 	key: "42361af08a221433b423a1e662175fa4",

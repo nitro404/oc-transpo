@@ -1,17 +1,17 @@
 "use strict";
 
-var changeCase = require("change-case");
-var utilities = require("extra-utilities");
-var envelope = require("node-envelope");
+const changeCase = require("change-case-bundled");
+const utilities = require("extra-utilities");
+const envelope = require("node-envelope");
 
-var transit = { };
+const transit = { };
 
-var apiAddress = "http://api.octranspo1.com/v1.2";
+const apiAddress = "http://api.octranspo1.com/v1.2";
 
-var apiKey = null;
-var appID = null;
+let apiKey = null;
+let appID = null;
 
-var errorCodes = {
+const errorCodes = {
 	"1": "Invalid API key",
 	"2": "Unable to query data source",
 	"10": "Invalid stop number",
@@ -20,15 +20,15 @@ var errorCodes = {
 };
 
 function formatError(error) {
-	var formattedError = { };
+	const formattedError = { };
 
-	var errorCode = utilities.parseInteger(error);
+	const errorCode = utilities.parseInteger(error);
 
 	if(!isNaN(errorCode)) {
 		formattedError.code = errorCode;
 	}
 
-	var message = errorCodes[errorCode];
+	const message = errorCodes[errorCode];
 
 	if(utilities.isValid(message)) {
 		formattedError.message = message;
@@ -43,21 +43,21 @@ function formatError(error) {
 function parseTime(value) {
 	if(utilities.isEmptyString(value)) { return null; }
 
-	var timeData = value.match(/^[ \t]*([0-9]{1,2}):?([0-5][0-9])[ \t]*$/);
+	const timeData = value.match(/^[ \t]*([0-9]{1,2}):?([0-5][0-9])[ \t]*$/);
 
 	if(!timeData || timeData.length !== 3) { return null; }
 
-	var hour = utilities.parseInteger(timeData[1]);
+	const hour = utilities.parseInteger(timeData[1]);
 
 	if(isNaN(hour) || hour < 0) { return null; }
 
-	var fixedHour = hour % 24;
+	const fixedHour = hour % 24;
 
 	return utilities.parseTime((fixedHour < 10 ? "0" : "") + fixedHour + ":" + timeData[2]);
 }
 
 function parseTimeElapsed(timeElapsed) {
-	var formattedTimeElapsed = utilities.parseFloatingPointNumber(timeElapsed);
+	const formattedTimeElapsed = utilities.parseFloatingPointNumber(timeElapsed);
 
 	if(isNaN(formattedTimeElapsed)) { return NaN; }
 
@@ -71,7 +71,7 @@ function parseBusType(type, includeRaw) {
 		return null;
 	}
 
-	var formattedData = {
+	const formattedData = {
 		bikeRack: !!type.match(/b/gi),
 		lowFloorEasyAccess: !!type.match(/[^d][ela]{1,3}[^h]/gi),
 		doubleDecker: !!type.match(/d{2}/gi),
@@ -80,10 +80,10 @@ function parseBusType(type, includeRaw) {
 		orion: !!type.match(/on/gi)
 	};
 
-	var lengthData = type.match(/([46])0?/);
+	const lengthData = type.match(/([46])0?/);
 
 	if(utilities.isNonEmptyArray(lengthData) && lengthData.length >= 2) {
-		var value = utilities.parseInteger(lengthData[1]);
+		const value = utilities.parseInteger(lengthData[1]);
 
 		if(value === 4) {
 			formattedData.busLength = 40;
@@ -123,7 +123,7 @@ function parseBusType(type, includeRaw) {
 }
 
 transit.setup = function(options) {
-	var formattedOptions = utilities.formatObject(
+	const formattedOptions = utilities.formatObject(
 		options,
 		{
 			key: {
@@ -165,7 +165,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 		return callback(new Error("Invalid routes parameter type - expected object or array."));
 	}
 
-	var formattedOptions = utilities.formatObject(
+	const formattedOptions = utilities.formatObject(
 		options,
 		{
 			insert: {
@@ -191,13 +191,13 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 				return callback(new Error("Stop number " + stop + " has no routes."));
 			}
 
-			var routeList = null;
-			var route = null;
-			var routeSummary = null;
-			var formattedDirectionName = null;
-			var hasRoute = null;
-			var hasRouteWithDirection = null;
-			var results = [];
+			let routeList = null;
+			let route = null;
+			let routeSummary = null;
+			let formattedDirectionName = null;
+			let hasRoute = null;
+			let hasRouteWithDirection = null;
+			const results = [];
 
 			if(Array.isArray(routes)) {
 				routeList = routes;
@@ -206,7 +206,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 				routeList = [routes];
 			}
 
-			for(var i = 0; i < routeList.length; i++) {
+			for(let i = 0; i < routeList.length; i++) {
 				route = routeList[i];
 
 				if(utilities.isEmptyObject(route)) {
@@ -230,7 +230,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 					return callback(new Error("Direction name cannot be empty!"));
 				}
 
-				for(var j = 0; j < stopSummary.routes.length; j++) {
+				for(let j = 0; j < stopSummary.routes.length; j++) {
 					routeSummary = stopSummary.routes[j];
 
 					if(routeSummary.route === route.route) {
@@ -253,7 +253,7 @@ transit.getRouteDirectionIdentifiers = function(stop, routes, options, callback)
 				}
 
 				if(!hasRouteWithDirection) {
-					var message = null;
+					let message = null;
 
 					if(!hasRoute) {
 						message = "Stop number " + stop + " has no route with number " + route + ".";
@@ -297,7 +297,7 @@ transit.getStopSummary = function(stop, options, callback) {
 		return callback(new Error("Missing or invalid stop number: " + stop + " - expected integer."));
 	}
 
-	var formattedOptions = utilities.formatObject(
+	const formattedOptions = utilities.formatObject(
 		options,
 		{
 			includeRaw: {
@@ -328,23 +328,23 @@ transit.getStopSummary = function(stop, options, callback) {
 				return callback(new Error("Invalid server response for GetRouteSummaryForStop."));
 			}
 
-			var data = result.GetRouteSummaryForStopResult;
+			const data = result.GetRouteSummaryForStopResult;
 
 			if(utilities.isNonEmptyString(data.Error)) {
-				var formattedError = formatError(data.Error);
-				var error = new Error(formattedError.message);
+				const formattedError = formatError(data.Error);
+				const error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
 				return callback(error);
 			}
 
-			var formattedData = {
+			const formattedData = {
 				stop: utilities.parseInteger(data.StopNo),
 				description: changeCase.title(data.StopDescription)
 			};
 
-			var routes = null;
-			var route = null;
-			var formattedRoute = null;
+			let routes = null;
+			let route = null;
+			let formattedRoute = null;
 
 			if(utilities.isValid(data.Routes)) {
 				formattedData.routes = [];
@@ -366,7 +366,7 @@ transit.getStopSummary = function(stop, options, callback) {
 					}
 				}
 
-				for(var i = 0; i < routes.length; i++) {
+				for(let i = 0; i < routes.length; i++) {
 					route = routes[i];
 
 					if(utilities.isEmptyObject(route)) {
@@ -421,7 +421,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 		return callback(new Error("Missing or invalid route number: " + route + " - expected integer."));
 	}
 
-	var formattedOptions = utilities.formatObject(
+	const formattedOptions = utilities.formatObject(
 		options,
 		{
 			includeRaw: {
@@ -453,16 +453,16 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 				return callback(new Error("Invalid server response for GetNextTripsForStop."));
 			}
 
-			var data = result.GetNextTripsForStopResult;
+			const data = result.GetNextTripsForStopResult;
 
 			if(utilities.isNonEmptyString(data.Error)) {
-				var formattedError = formatError(data.Error);
-				var error = new Error(formattedError.message);
+				const formattedError = formatError(data.Error);
+				const error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
 				return callback(error);
 			}
 
-			var formattedData = {
+			const formattedData = {
 				stop: utilities.parseInteger(data.StopNo)
 			};
 
@@ -474,13 +474,13 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 				formattedData.description = changeCase.title(data.StopLabel);
 			}
 
-			var routes = null;
-			var route = null;
-			var trips = null;
-			var trip = null;
-			var bus = null;
-			var formattedRoute = null;
-			var formattedTrip = null;
+			let routes = null;
+			let route = null;
+			let trips = null;
+			let trip = null;
+			let bus = null;
+			let formattedRoute = null;
+			let formattedTrip = null;
 
 			if(utilities.isValid(data.Route)) {
 				formattedData.routes = [];
@@ -503,7 +503,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 				}
 			}
 
-			for(var i = 0; i < routes.length; i++) {
+			for(let i = 0; i < routes.length; i++) {
 				route = routes[i];
 
 				if(utilities.isEmptyObject(route)) {
@@ -549,7 +549,7 @@ transit.getRouteInformation = function(stop, route, options, callback) {
 						}
 					}
 
-					for(var j = 0; j < trips.length; j++) {
+					for(let j = 0; j < trips.length; j++) {
 						trip = trips[j];
 
 						if(utilities.isEmptyObject(trip)) {
@@ -632,7 +632,7 @@ transit.getStopInformation = function(stop, options, callback) {
 		return callback(new Error("Missing or invalid stop number: " + stop + " - expected integer."));
 	}
 
-	var formattedOptions = utilities.formatObject(
+	const formattedOptions = utilities.formatObject(
 		options,
 		{
 			includeRaw: {
@@ -663,16 +663,16 @@ transit.getStopInformation = function(stop, options, callback) {
 				return callback(new Error("Invalid server response for GetNextTripsForStopAllRoutes."));
 			}
 
-			var data = result.GetRouteSummaryForStopResult;
+			const data = result.GetRouteSummaryForStopResult;
 
 			if(utilities.isNonEmptyString(data.Error)) {
-				var formattedError = formatError(data.Error);
-				var error = new Error(formattedError.message);
+				const formattedError = formatError(data.Error);
+				const error = new Error(formattedError.message);
 				if(utilities.isValid(formattedError.code)) { error.code = formattedError.code; }
 				return callback(error);
 			}
 
-			var formattedData = {
+			const formattedData = {
 				stop: utilities.parseInteger(data.StopNo)
 			};
 
@@ -684,13 +684,13 @@ transit.getStopInformation = function(stop, options, callback) {
 				formattedData.description = changeCase.title(data.StopLabel);
 			}
 
-			var routes = null;
-			var route = null;
-			var trips = null;
-			var trip = null;
-			var bus = null;
-			var formattedRoute = null;
-			var formattedTrip = null;
+			let routes = null;
+			let route = null;
+			let trips = null;
+			let trip = null;
+			let bus = null;
+			let formattedRoute = null;
+			let formattedTrip = null;
 
 			if(utilities.isValid(data.Routes)) {
 				formattedData.routes = [];
@@ -712,7 +712,7 @@ transit.getStopInformation = function(stop, options, callback) {
 					}
 				}
 
-				for(var i = 0; i < routes.length; i++) {
+				for(let i = 0; i < routes.length; i++) {
 					route = routes[i];
 
 					if(utilities.isEmptyObject(route)) {
@@ -758,7 +758,7 @@ transit.getStopInformation = function(stop, options, callback) {
 							}
 						}
 
-						for(var j = 0; j < trips.length; j++) {
+						for(let j = 0; j < trips.length; j++) {
 							trip = trips[j];
 
 							if(utilities.isEmptyObject(trip)) {

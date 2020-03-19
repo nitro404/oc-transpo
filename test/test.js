@@ -2,10 +2,10 @@
 
 global.utilities = undefined;
 
-var ocTranspo = require("../dist/oc-transpo.js");
-var utilities = require("extra-utilities");
-var chai = require("chai");
-var expect = chai.expect;
+const ocTranspo = require("../src/transit.js");
+const utilities = require("extra-utilities");
+const chai = require("chai");
+const expect = chai.expect;
 
 describe("OC Transpo", function() {
 	describe("setup", function() {
