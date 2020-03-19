@@ -6,6 +6,8 @@
 [![Known Vulnerabilities][vulnerabilities-image]][vulnerabilities-url]
 [![Downloads][npm-downloads-image]][npm-url]
 
+**This module is currently incompatible with the latest version of OC Transpo's RESTful API.**
+
 A wrapper for the OC Transpo API.
 
 This module is unofficial and is in no way affiliated with OC Transpo.
